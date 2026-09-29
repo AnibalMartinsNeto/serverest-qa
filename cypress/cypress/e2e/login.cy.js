@@ -1,7 +1,7 @@
 import LoginPage from "../pages/LoginPage";
 import HomeAdminPage from "../pages/HomeAdminPage";
 
-describe("Login - ServeRest", () => {
+describe("Login - ServeRest [DEV-1]", () => {
   const email = Cypress.env("SERVEREST_EMAIL");
   const senha = Cypress.env("SERVEREST_SENHA");
 

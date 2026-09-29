@@ -1,4 +1,4 @@
-// tests/login.js
+// tests/login.js  [DEV-1]
 // Login pela API do ServeRest (POST /login): sucesso e senha inválida.
 //
 // Padrão: SMOKE (1 usuário virtual, 3 iterações). Para carga leve:

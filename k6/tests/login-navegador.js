@@ -1,4 +1,4 @@
-// tests/login-navegador.js
+// tests/login-navegador.js  [DEV-1]
 // Login pelo FRONT, num Chromium real (módulo browser do k6): mede o tempo
 // que o usuário espera do clique em "Entrar" até a home do admin aparecer,
 // e coleta os Web Vitals (LCP, CLS) da página.

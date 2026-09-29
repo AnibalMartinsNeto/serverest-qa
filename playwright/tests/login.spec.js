@@ -1,6 +1,6 @@
 const { test, expect, garantirUsuarioAdmin } = require("../support/fixtures");
 
-test.describe("Login - ServeRest", () => {
+test.describe("Login - ServeRest [DEV-1]", () => {
   test.beforeEach(async ({ request, credenciais }) => {
     await garantirUsuarioAdmin(request, credenciais);
   });

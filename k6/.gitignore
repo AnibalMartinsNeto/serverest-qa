@@ -1,0 +1,7 @@
+results/
+screenshots/
+node_modules/
+.DS_Store
+
+# Credenciais (nunca commitar)
+.env

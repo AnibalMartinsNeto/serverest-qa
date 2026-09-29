@@ -1,0 +1,15 @@
+# Dependências e artefatos de execução
+node_modules/
+test-results/
+playwright-report/
+blob-report/
+cypress/screenshots/
+cypress/videos/
+cypress/downloads/
+results/
+
+# Credenciais (nunca commitar) — use os arquivos .example como modelo
+.env
+cypress.env.json
+
+.DS_Store

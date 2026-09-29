@@ -1,0 +1,14 @@
+{
+  "name": "serverest-cypress-qa",
+  "version": "1.0.0",
+  "description": "Testes E2E com Cypress do front do ServeRest (front.serverest.dev)",
+  "scripts": {
+    "cy:open": "cypress open",
+    "test": "cypress run --spec \"cypress/e2e/login.cy.js\"",
+    "test:chrome": "cypress run --browser chrome --spec \"cypress/e2e/login.cy.js\"",
+    "test:all": "cypress run"
+  },
+  "devDependencies": {
+    "cypress": "^15.19.0"
+  }
+}

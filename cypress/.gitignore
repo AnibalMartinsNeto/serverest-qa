@@ -1,0 +1,9 @@
+node_modules/
+cypress/videos/
+cypress/screenshots/
+cypress/downloads/
+cypress/results/
+.DS_Store
+
+# Credenciais (nunca commitar)
+cypress.env.json

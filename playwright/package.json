@@ -1,0 +1,15 @@
+{
+  "name": "serverest-playwright-qa",
+  "version": "1.0.0",
+  "description": "Testes E2E com Playwright do front do ServeRest (front.serverest.dev)",
+  "scripts": {
+    "pw:ui": "playwright test --ui",
+    "test": "playwright test tests/login.spec.js --project=chromium",
+    "test:chrome": "playwright test tests/login.spec.js --project=chrome",
+    "test:all": "playwright test --project=chromium",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0"
+  }
+}

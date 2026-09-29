@@ -1,0 +1,10 @@
+{
+  "name": "serverest-k6",
+  "version": "1.0.0",
+  "description": "Testes de desempenho com k6 do login do ServeRest: API (serverest.dev) e navegador (front.serverest.dev).",
+  "scripts": {
+    "test": "k6 run tests/login.js",
+    "test:browser": "k6 run tests/login-navegador.js",
+    "test:all": "k6 run tests/login.js && k6 run tests/login-navegador.js"
+  }
+}

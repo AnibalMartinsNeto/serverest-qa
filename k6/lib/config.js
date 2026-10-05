@@ -1,7 +1,6 @@
 // lib/config.js
 // Configuração compartilhada pelos scripts k6 do ServeRest.
 
-export const API_URL = (__ENV.API_URL || "https://serverest.dev").replace(/\/$/, "");
 export const FRONT_URL = (__ENV.FRONT_URL || "https://front.serverest.dev").replace(/\/$/, "");
 
 // O k6 não lê .env sozinho: este trecho abre o arquivo e interpreta as
@@ -22,6 +21,9 @@ function lerEnv() {
 }
 
 const arquivo = lerEnv();
+// API: -e API_URL > SERVEREST_API_URL do .env (a local, do compose.yaml) > a pública.
+export const API_PUBLICA = "https://serverest.dev";
+export const API_URL = (__ENV.API_URL || arquivo.SERVEREST_API_URL || API_PUBLICA).replace(/\/$/, "");
 export const EMAIL = __ENV.SERVEREST_EMAIL || arquivo.SERVEREST_EMAIL;
 export const SENHA = __ENV.SERVEREST_SENHA || arquivo.SERVEREST_SENHA;
 

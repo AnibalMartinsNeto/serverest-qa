@@ -15,6 +15,24 @@ Automação de testes do [ServeRest](https://serverest.dev), uma loja virtual p�
 
 - [Node.js](https://nodejs.org/) 18+
 - [k6](https://grafana.com/docs/k6/latest/set-up/install-k6/): `winget install GrafanaLabs.k6`
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/), para a API local
+
+## API local (recomendado)
+
+O ServeRest público limita as requisições **somando todos os usuários**. Quando alguém faz teste de carga nele, até o login devolve 429 ("comportamento equivalente a teste de carga"). Por isso os testes usam a API do ServeRest **local**, em Docker:
+
+```bash
+docker compose up -d
+```
+
+Para parar, use `docker compose down`. Isso também apaga os dados, e a base volta ao estado inicial. O `iniciar.bat` do painel-pro já sobe a API local.
+
+Com `SERVEREST_API_URL=http://localhost:3000` no `.env`:
+
+- o **Playwright** continua abrindo o front público (só arquivos estáticos, sem limite) e **intercepta** as chamadas a `serverest.dev`, mandando para a API local;
+- o **k6** usa a API local. Teste de carga (`-e VUS=...`) contra o servidor público é **bloqueado** pelo próprio script, porque a documentação do ServeRest pede carga só em ambiente local.
+
+Sem essa variável, tudo usa o ServeRest público.
 
 ## Credenciais
 

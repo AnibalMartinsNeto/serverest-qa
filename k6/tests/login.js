@@ -6,10 +6,17 @@
 // A API é pública e compartilhada: mantenha a carga baixa.
 import http from "k6/http";
 import { check, group, sleep } from "k6";
-import { API_URL, EMAIL, SENHA } from "../lib/config.js";
+import { API_PUBLICA, API_URL, EMAIL, SENHA } from "../lib/config.js";
 import { garantirUsuarioAdmin } from "../lib/usuario.js";
 
 const carga = __ENV.VUS ? { vus: Number(__ENV.VUS), duration: __ENV.DURACAO || "30s" } : { vus: 1, iterations: 3 };
+
+// O ServeRest PEDE que teste de carga rode só na API local (docker compose up -d):
+// no servidor público o limite é somado entre todos os usuários, e a carga
+// derruba o estudo de outras pessoas (é o 429 "comportamento de teste de carga").
+if (__ENV.VUS && API_URL === API_PUBLICA) {
+  throw new Error("Teste de carga só na API local: defina SERVEREST_API_URL=http://localhost:3000 no .env.");
+}
 
 export const options = {
   ...carga,

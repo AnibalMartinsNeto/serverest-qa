@@ -1,0 +1,11 @@
+# API do ServeRest rodando LOCALMENTE (porta 3000).
+# O ServeRest público limita requisições somando TODOS os usuários do mundo:
+# quando alguém faz teste de carga nele, até o login devolve 429. Localmente
+# não há limite, e os dados são só nossos (a base começa limpa a cada subida).
+# Subir:  docker compose up -d      Parar: docker compose down
+services:
+  serverest:
+    image: paulogoncalvesbh/serverest:latest
+    container_name: serverest-api
+    ports:
+      - "3000:3000"

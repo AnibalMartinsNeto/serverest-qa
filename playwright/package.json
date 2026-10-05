@@ -4,9 +4,10 @@
   "description": "Testes E2E com Playwright do front do ServeRest (front.serverest.dev)",
   "scripts": {
     "pw:ui": "playwright test --ui",
-    "test": "playwright test tests/login.spec.js --project=chromium",
-    "test:chrome": "playwright test tests/login.spec.js --project=chrome",
-    "test:all": "playwright test --project=chromium",
+    "test": "playwright test --project=chromium",
+    "test:login": "playwright test tests/login.spec.js --project=chromium",
+    "test:chrome": "playwright test --project=chrome",
+    "test:all": "playwright test --project=chromium --project=chrome --project=msedge",
     "report": "playwright show-report"
   },
   "devDependencies": {

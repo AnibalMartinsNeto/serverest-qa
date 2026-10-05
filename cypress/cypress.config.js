@@ -6,12 +6,9 @@ module.exports = defineConfig({
     baseUrl: "https://front.serverest.dev",
     viewportWidth: 1280,
     viewportHeight: 720,
-    env: {
-      // API usada para preparar dados (ex.: garantir que o usuário existe).
-      apiUrl: "https://serverest.dev",
-    },
-    // E-mail e senha ficam em cypress.env.json (fora do Git):
-    //   { "SERVEREST_EMAIL": "...", "SERVEREST_SENHA": "..." }
-    // Modelo em cypress.env.example.json.
+    // Mesmos limites do Playwright: 10s para cada asserção/comando.
+    defaultCommandTimeout: 10000,
+    // E-mail, senha e SERVEREST_API_URL ficam em cypress.env.json (fora do Git).
+    // Modelo em cypress.env.example.json. Sem SERVEREST_API_URL, usa o ServeRest público.
   },
 });

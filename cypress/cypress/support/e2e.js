@@ -1,3 +1,4 @@
 // cypress/support/e2e.js
 // Arquivo carregado automaticamente antes de cada spec de teste.
+import "./api";
 import "./commands";

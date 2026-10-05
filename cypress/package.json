@@ -4,9 +4,10 @@
   "description": "Testes E2E com Cypress do front do ServeRest (front.serverest.dev)",
   "scripts": {
     "cy:open": "cypress open",
-    "test": "cypress run --spec \"cypress/e2e/login.cy.js\"",
-    "test:chrome": "cypress run --browser chrome --spec \"cypress/e2e/login.cy.js\"",
-    "test:all": "cypress run"
+    "test": "cypress run",
+    "test:login": "cypress run --spec \"cypress/e2e/login.cy.js\"",
+    "test:chrome": "cypress run --browser chrome",
+    "test:edge": "cypress run --browser edge"
   },
   "devDependencies": {
     "cypress": "^15.19.0"

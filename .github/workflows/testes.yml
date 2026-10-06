@@ -1,5 +1,11 @@
-# CI dos testes do ServeRest: roda a cada push e pull request na main
-# (e à mão, pela aba Actions). Cada ferramenta é um job em paralelo.
+# CI dos testes do ServeRest. Cada ferramenta é um job em paralelo.
+#
+# Quando roda:
+# - push e pull request: só os jobs cuja pasta mudou (mexeu só no cypress/,
+#   roda só o Cypress); mudança só em arquivos .md não dispara nada;
+# - toda noite (03:00 de Brasília): TUDO, mesmo sem mudança no código, para
+#   descobrir quando o próprio ServeRest (front público) mudou;
+# - à mão, pela aba Actions ("Run workflow"): tudo.
 #
 # A API do ServeRest sobe como "service container" (a mesma imagem do
 # compose.yaml), então nada depende do servidor público e do limite 429.
@@ -10,7 +16,11 @@ name: Testes
 on:
   push:
     branches: [main]
+    paths-ignore: ["**/*.md"]
   pull_request:
+    paths-ignore: ["**/*.md"]
+  schedule:
+    - cron: "0 6 * * *" # 06:00 UTC = 03:00 em Brasília
   workflow_dispatch:
 
 env:
@@ -19,8 +29,31 @@ env:
   SERVEREST_SENHA: teste123
 
 jobs:
+  # Descobre quais pastas mudaram neste push/PR. Mudança no próprio workflow
+  # conta para todos os jobs.
+  mudancas:
+    name: Pastas alteradas
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      playwright: ${{ steps.filtro.outputs.playwright }}
+      cypress: ${{ steps.filtro.outputs.cypress }}
+      k6: ${{ steps.filtro.outputs.k6 }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filtro
+        with:
+          filters: |
+            playwright: ["playwright/**", ".github/workflows/**"]
+            cypress: ["cypress/**", ".github/workflows/**"]
+            k6: ["k6/**", ".github/workflows/**"]
+
   playwright:
     name: Playwright (Chromium)
+    needs: mudancas
+    if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.mudancas.outputs.playwright == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     services:
@@ -53,6 +86,8 @@ jobs:
 
   cypress:
     name: Cypress (Electron)
+    needs: mudancas
+    if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.mudancas.outputs.cypress == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     services:
@@ -80,6 +115,8 @@ jobs:
 
   k6:
     name: k6 (smoke do login pela API)
+    needs: mudancas
+    if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || needs.mudancas.outputs.k6 == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     services:

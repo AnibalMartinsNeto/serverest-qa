@@ -67,7 +67,15 @@ Os testes ligados a uma demanda levam a chave no nome, por exemplo `describe("Lo
 
 ## Integração contínua (GitHub Actions)
 
-A cada push e pull request na `main`, o workflow [`.github/workflows/testes.yml`](.github/workflows/testes.yml) roda **Playwright**, **Cypress** e o smoke do **k6** em paralelo. A API do ServeRest sobe como serviço dentro do próprio CI (a mesma imagem do `compose.yaml`) e começa vazia a cada execução. Relatório do Playwright e screenshots do Cypress ficam como artefatos da execução.
+O workflow [`.github/workflows/testes.yml`](.github/workflows/testes.yml) roda **Playwright**, **Cypress** e o smoke do **k6** em paralelo:
+
+| Quando | O que roda |
+|---|---|
+| Push na `main` ou pull request | Só a ferramenta cuja pasta mudou (ex.: mexeu em `cypress/`, roda só o Cypress). Mudança só em `.md` não dispara nada. |
+| Toda noite, 03:00 de Brasília | Tudo, mesmo sem mudança no código: avisa quando o próprio ServeRest mudou |
+| Aba Actions → *Run workflow* | Tudo |
+
+ A API do ServeRest sobe como serviço dentro do próprio CI (a mesma imagem do `compose.yaml`) e começa vazia a cada execução. Relatório do Playwright e screenshots do Cypress ficam como artefatos da execução.
 
 ## Falha conhecida
 

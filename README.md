@@ -1,5 +1,7 @@
 # ServeRest QA
 
+[![Testes](https://github.com/AnibalMartinsNeto/serverest-qa/actions/workflows/testes.yml/badge.svg)](https://github.com/AnibalMartinsNeto/serverest-qa/actions/workflows/testes.yml)
+
 Automação de testes do [ServeRest](https://serverest.dev), uma loja virtual pública feita para estudo de testes, com três ferramentas:
 
 | Pasta | Ferramenta | Tipo de teste | O que cobre hoje |
@@ -63,9 +65,13 @@ Cada pasta tem um README com os comandos e os detalhes do projeto.
 
 Os testes ligados a uma demanda levam a chave no nome, por exemplo `describe("Login - ServeRest [DEV-1]")`. Buscando `DEV-1` na tela Jira do painel, aparecem os specs que a citam, prontos para executar.
 
+## Integração contínua (GitHub Actions)
+
+A cada push e pull request na `main`, o workflow [`.github/workflows/testes.yml`](.github/workflows/testes.yml) roda **Playwright**, **Cypress** e o smoke do **k6** em paralelo. A API do ServeRest sobe como serviço dentro do próprio CI (a mesma imagem do `compose.yaml`) e começa vazia a cada execução. Relatório do Playwright e screenshots do Cypress ficam como artefatos da execução.
+
 ## Falha conhecida
 
-"Lista de usuários não deve exibir a senha dos usuários" (Cypress e Playwright) **falha de propósito**. A tela do administrador mostra a senha de todos os usuários em texto puro, um defeito real de segurança do ServeRest. O teste fica vermelho até o defeito ser corrigido.
+"Lista de usuários não deve exibir a senha dos usuários" (Cypress e Playwright) **falha de propósito**. A tela do administrador mostra a senha de todos os usuários em texto puro, um defeito real de segurança do ServeRest. O teste fica vermelho até o defeito ser corrigido. No CI ele é **pulado** (`--grep-invert` no Playwright e `PULAR_DEFEITOS_CONHECIDOS` no Cypress), para o selo do GitHub não ficar vermelho para sempre e esconder falhas novas.
 
 ## Padrões usados
 

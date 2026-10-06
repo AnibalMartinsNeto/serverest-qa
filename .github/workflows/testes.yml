@@ -1,0 +1,96 @@
+# CI dos testes do ServeRest: roda a cada push e pull request na main
+# (e à mão, pela aba Actions). Cada ferramenta é um job em paralelo.
+#
+# A API do ServeRest sobe como "service container" (a mesma imagem do
+# compose.yaml), então nada depende do servidor público e do limite 429.
+# Ela começa vazia a cada execução: as credenciais abaixo são só desta base
+# descartável (não são segredos) e os testes criam o admin antes de rodar.
+name: Testes
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  SERVEREST_API_URL: http://localhost:3000
+  SERVEREST_EMAIL: qa.ci@teste.com
+  SERVEREST_SENHA: teste123
+
+jobs:
+  playwright:
+    name: Playwright (Chromium)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      serverest:
+        image: paulogoncalvesbh/serverest:latest
+        ports: ["3000:3000"]
+    defaults:
+      run:
+        working-directory: playwright
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: playwright/package-lock.json
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      # O teste da senha falha de propósito (defeito real do ServeRest):
+      # fica fora do CI para o selo não ficar vermelho para sempre.
+      - run: npx playwright test --project=chromium --grep-invert "não deve exibir a senha"
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-relatorio
+          path: |
+            playwright/playwright-report/
+            playwright/test-results/
+          retention-days: 14
+
+  cypress:
+    name: Cypress (Electron)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      serverest:
+        image: paulogoncalvesbh/serverest:latest
+        ports: ["3000:3000"]
+    steps:
+      - uses: actions/checkout@v4
+      # A action do Cypress instala as dependências (com cache) e roda o cypress run.
+      # Variáveis CYPRESS_* viram Cypress.env("...") nos testes.
+      - uses: cypress-io/github-action@v6
+        with:
+          working-directory: cypress
+        env:
+          CYPRESS_SERVEREST_API_URL: ${{ env.SERVEREST_API_URL }}
+          CYPRESS_SERVEREST_EMAIL: ${{ env.SERVEREST_EMAIL }}
+          CYPRESS_SERVEREST_SENHA: ${{ env.SERVEREST_SENHA }}
+          CYPRESS_PULAR_DEFEITOS_CONHECIDOS: "true"
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/cypress/screenshots/
+          retention-days: 14
+
+  k6:
+    name: k6 (smoke do login pela API)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      serverest:
+        image: paulogoncalvesbh/serverest:latest
+        ports: ["3000:3000"]
+    defaults:
+      run:
+        working-directory: k6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: grafana/setup-k6-action@v1
+      # Só o smoke da API: o login pelo navegador usa o front e a API públicos.
+      - run: k6 run -e API_URL=${{ env.SERVEREST_API_URL }} tests/login.js

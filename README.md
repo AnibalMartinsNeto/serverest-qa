@@ -61,6 +61,10 @@ cd k6 && npm run test:browser     # login pelo navegador
 
 Cada pasta tem um README com os comandos e os detalhes do projeto.
 
+## Regras de negócio
+
+[`REGRAS_DE_NEGOCIO.md`](REGRAS_DE_NEGOCIO.md) descreve o comportamento esperado do ServeRest (login, usuários, produtos, loja e carrinhos), com um código por regra (ex.: `USU-03`) e as mensagens exatas. É a fonte da verdade dos testes, e o painel-pro envia o arquivo à IA na triagem, para ela decidir se a falha é do sistema ou do teste.
+
 ## Rastreabilidade com o Jira
 
 Os testes ligados a uma demanda levam a chave no nome, por exemplo `describe("Login - ServeRest [DEV-1]")`. Buscando `DEV-1` na tela Jira do painel, aparecem os specs que a citam, prontos para executar.
